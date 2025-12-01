@@ -1,1 +1,621 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غرفة التفاعل الموحدة</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* ====== شاشة الدخول ====== */
+        #login-screen {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-top: 100px;
+        }
+
+        #login-screen h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        #login-screen p {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .login-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .login-form input {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-form button {
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .login-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        #app-screen {
+            display: none;
+        }
+
+        /* ====== شاشة التطبيق ====== */
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 2.2em;
+        }
+
+        header p {
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .room-info {
+            background: #f0f8ff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .controls button.logout {
+            background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%);
+        }
+
+        .add-post-form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .add-post-form.active {
+            display: block;
+        }
+
+        .add-post-form h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-buttons .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .form-buttons .btn-cancel {
+            background: #eee;
+            color: #333;
+        }
+
+        .form-buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .post-content {
+            padding: 20px;
+        }
+
+        .post-caption {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            background: #f5f5f5;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .comments-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .comment {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-right: 3px solid #667eea;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            color: #555;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .add-comment input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .add-comment button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .add-comment button:hover {
+            background: #764ba2;
+        }
+
+        .no-comments {
+            color: #999;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ====== شاشة الدخول ====== -->
+        <div id="login-screen">
+            <h1>🔐 غرفة التفاعل الموحدة</h1>
+            <p>أدخل كلمة المرور للدخول للغرفة</p>
+            <div class="login-form">
+                <input type="password" id="password-input" placeholder="أدخل كلمة المرور" autofocus>
+                <button onclick="handleLogin()">دخول</button>
+            </div>
+            <p style="color: #999; font-size: 0.9em;">كل من يدخل نفس كلمة المرور يرى نفس البيانات!</p>
+        </div>
+
+        <!-- ====== شاشة التطبيق ====== -->
+        <div id="app-screen">
+            <header>
+                <h1>💎 غرفة التفاعل</h1>
+                <p>شارك وتفاعل بدون سيرفرات</p>
+                <div class="room-info">
+                    🔑 الغرفة: <span id="room-name"></span>
+                </div>
+            </header>
+
+            <div class="controls">
+                <button onclick="showAddPostForm()">➕ أضف منشور جديد</button>
+                <button class="logout" onclick="handleLogout()">🚪 خروج</button>
+            </div>
+
+            <div id="add-post-form" class="add-post-form">
+                <h3>📝 أضف منشور جديد</h3>
+                <div class="form-group">
+                    <label>رابط الصورة</label>
+                    <input type="url" id="new-image-path" placeholder="https://example.com/image.jpg" required>
+                </div>
+                <div class="form-group">
+                    <label>وصف المنشور</label>
+                    <textarea id="new-caption" placeholder="اكتب وصفاً لصورتك..." required></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button class="btn-submit" onclick="addNewPost()">✨ نشر</button>
+                    <button class="btn-cancel" onclick="hideAddPostForm()">إلغاء</button>
+                </div>
+            </div>
+
+            <div id="posts-container" class="posts-container"></div>
+
+            <footer>
+                <p>&copy; 2025 - غرفة موحدة بدون سيرفر</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // ==================== متغيرات عامة ====================
+        let currentPassword = null;
+        let currentRoomKey = null;
+
+        // البيانات الأولية
+        const initialPosts = [
+            {
+                id: 1,
+                imagePath: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=300&fit=crop',
+                caption: "مرحباً بكم في الغرفة! شارك أفكارك الآن 😊",
+                likes: 0,
+                comments: []
+            }
+        ];
+
+        // ==================== دوال الدخول والخروج ====================
+        function handleLogin() {
+            const passwordInput = document.getElementById('password-input');
+            const password = passwordInput.value.trim();
+
+            if (!password) {
+                alert('الرجاء إدخال كلمة المرور');
+                return;
+            }
+
+            currentPassword = password;
+            currentRoomKey = 'room_' + btoa(password);
+
+            // تحقق من وجود بيانات للغرفة
+            if (!localStorage.getItem(currentRoomKey)) {
+                localStorage.setItem(currentRoomKey, JSON.stringify(initialPosts));
+            }
+
+            // اعرض التطبيق واخفِ شاشة الدخول
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'block';
+            document.getElementById('room-name').textContent = password.substring(0, 10) + '...';
+
+            renderPosts();
+        }
+
+        function handleLogout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                currentPassword = null;
+                currentRoomKey = null;
+                document.getElementById('password-input').value = '';
+                document.getElementById('login-screen').style.display = 'block';
+                document.getElementById('app-screen').style.display = 'none';
+                document.getElementById('password-input').focus();
+            }
+        }
+
+        // ==================== دوال التخزين ====================
+        function getLocalData() {
+            if (!currentRoomKey) return initialPosts;
+            
+            const storedData = localStorage.getItem(currentRoomKey);
+            if (storedData) {
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    return Array.isArray(parsedData) ? parsedData : initialPosts;
+                } catch {
+                    return initialPosts;
+                }
+            }
+            saveLocalData(initialPosts);
+            return initialPosts;
+        }
+
+        function saveLocalData(posts) {
+            if (!currentRoomKey) return;
+            localStorage.setItem(currentRoomKey, JSON.stringify(posts));
+        }
+
+        // ==================== إدارة المنشورات ====================
+        function addNewPost() {
+            const imagePath = document.getElementById('new-image-path').value.trim();
+            const caption = document.getElementById('new-caption').value.trim();
+
+            if (!imagePath || !caption) {
+                alert("الرجاء إدخال رابط الصورة والوصف");
+                return;
+            }
+
+            const posts = getLocalData();
+            const newId = posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1;
+
+            posts.push({
+                id: newId,
+                imagePath: imagePath,
+                caption: caption,
+                likes: 0,
+                comments: []
+            });
+
+            saveLocalData(posts);
+            hideAddPostForm();
+            document.getElementById('new-image-path').value = '';
+            document.getElementById('new-caption').value = '';
+            renderPosts();
+        }
+
+        // ==================== الإعجابات والتعليقات ====================
+        function toggleLike(postId) {
+            const posts = getLocalData();
+            const postIndex = posts.findIndex(p => p.id === postId);
+
+            if (postIndex !== -1) {
+                posts[postIndex].likes += 1;
+                saveLocalData(posts);
+                renderPosts();
+            }
+        }
+
+        function addComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            const posts = getLocalData();
+            const postIndex = posts.findIndex(p => p.id === postId);
+
+            if (postIndex !== -1) {
+                posts[postIndex].comments.push({
+                    author: 'زائر',
+                    text: text
+                });
+                saveLocalData(posts);
+                input.value = '';
+                renderPosts();
+            }
+        }
+
+        // ==================== عرض المنشورات ====================
+        function renderPosts() {
+            const posts = getLocalData();
+            const container = document.getElementById('posts-container');
+
+            if (posts.length === 0) {
+                container.innerHTML = '<div style="color: white; text-align: center; padding: 40px; font-size: 1.2em;">لا توجد منشورات بعد</div>';
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="post">
+                    <img src="${post.imagePath}" alt="صورة" class="post-image" onerror="this.src='https://via.placeholder.com/500x300?text=صورة'">
+                    
+                    <div class="post-content">
+                        <p class="post-caption">${post.caption}</p>
+                        
+                        <div class="post-stats">
+                            <span class="stat">❤️ ${post.likes} إعجاب</span>
+                            <span class="stat">💬 ${post.comments.length} تعليق</span>
+                        </div>
+
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="toggleLike(${post.id})">❤️ إعجاب</button>
+                            <button class="action-btn" onclick="toggleComments(${post.id})">💬 تعليقات</button>
+                        </div>
+
+                        <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                            <div id="comments-list-${post.id}">
+                                ${post.comments.length === 0 
+                                    ? '<p class="no-comments">لا توجد تعليقات بعد</p>' 
+                                    : post.comments.map(comment => `
+                                        <div class="comment">
+                                            <div class="comment-author">${comment.author}</div>
+                                            <div class="comment-text">${comment.text}</div>
+                                        </div>
+                                    `).join('')
+                                }
+                            </div>
+                            <div class="add-comment">
+                                <input type="text" id="comment-input-${post.id}" placeholder="اكتب تعليقاً...">
+                                <button onclick="addComment(${post.id})">إرسال</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleComments(postId) {
+            const section = document.getElementById(`comments-${postId}`);
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ==================== إدارة النماذج ====================
+        function showAddPostForm() {
+            document.getElementById('add-post-form').classList.add('active');
+        }
+
+        function hideAddPostForm() {
+            document.getElementById('add-post-form').classList.remove('active');
+        }
+
+        // ==================== مراقبة التغييرات ====================
+        window.addEventListener('storage', () => {
+            renderPosts();
+        });
+    </script>
+</body>
+</html>
